@@ -105,15 +105,26 @@ impl SanmokuNarabe{
             x: u8,
             y: u8,
         };
-        let inside_flag = self.check_inside(x, y);
-        let duplicate_flag = self.check_enable_put(x, y);
-        while !(inside_flag || duplicate_flag){
+        // let inside_flag = self.check_inside(x, y);
+        let (mut inside_flag, mut duplicate_flag) = self.check_enable_put(x, y);
+        println!("{} {}",inside_flag, duplicate_flag);
+        while !(inside_flag && duplicate_flag){
             if !inside_flag{
                 println!("碁盤の外にどうやって石を置くんですか？")
             }
             if !duplicate_flag{
                 println!("碁石の上に碁石を重ねるゲームではありません")
             }
+            print!("マスを指定してください(x y): ");
+            stdout().flush().unwrap();
+            input!{
+                x: u8,
+                y: u8,
+            };
+            let( _inside_flag, _duplicate_flag) = self.check_enable_put(x, y);
+            inside_flag = _inside_flag;
+            duplicate_flag = _duplicate_flag;
+            // self.goban.put(x, y, if self.is_first {1} else {2});
         }
         self.goban.put(x, y, if self.is_first {1} else {2});
     }
@@ -122,18 +133,23 @@ impl SanmokuNarabe{
         self.turn += 1;
     }
 
-    fn check_inside(&self, x:u8, y:u8) -> bool{
-        if self.goban.x >= x && self.goban.y >= y{
-            return true
-        }
-        return false
-    }
+    // fn check_inside(&self, x:u8, y:u8) -> bool{
+    //     if self.goban.x < x || self.goban.y < y{
+    //         return false;
+    //     }
+    //     return true;
+    // }
 
-    fn check_enable_put(&self, x:u8, y:u8) -> bool{
-        if self.goban.board[x as usize][y as usize] == 0{
-            return true;
+    fn check_enable_put(&self, x:u8, y:u8) -> (bool, bool){
+        let mut flag1 = true;
+        let mut flag2 = true;
+        if self.goban.x <= x || self.goban.y <= y{
+            flag1 = false;
         }
-        return false;
+        if flag1 && self.goban.board[x as usize][y as usize] == 0{
+            flag2 = false
+        }
+        return (flag1, flag2);
     }
 }
 
