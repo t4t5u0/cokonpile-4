@@ -30,8 +30,7 @@ def solve():
     phi = math.lcm(p-1, q-1)
     d = ex_euclid(e, phi)
     m = pow(c, d, n)
-    m_ = f'{m:0512x}'
-    r = bytes.fromhex(m_)
+    r = bytes.fromhex(f'{m:0512x}')
     print(r)
 
 
