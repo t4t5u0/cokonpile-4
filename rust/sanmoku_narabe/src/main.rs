@@ -60,6 +60,13 @@ impl SanmokuNarabe{
         for i in 0..self.goban.x-2{
             for j in 0..self.goban.y-2{
                 // 縦横斜めの判定
+                println!("{} {} {} {} {}", 
+                        self.goban.board[i as usize][j as usize] == 1 || self.goban.board[i as usize][j as usize] == 2,
+                        (self.goban.board[i as usize][j as usize] == self.goban.board[(i+1) as usize][j as usize] ) && (self.goban.board[(i+1) as usize][j as usize] == self.goban.board[(i+2) as usize][j as usize]),
+                        (self.goban.board[i as usize][j as usize] == self.goban.board[i as usize][(j+1) as usize] ) && (self.goban.board[i as usize][(j+1) as usize] == self.goban.board[i as usize][(j+2) as usize]),
+                        ((self.goban.board[i as usize][j as usize] == self.goban.board[(i+1) as usize][(j+1) as usize] ) && (self.goban.board[(i+1) as usize][(j+1) as usize] == self.goban.board[(i+2) as usize][(j+2) as usize])),
+                        (self.goban.board[(i+2) as usize][j as usize] == self.goban.board[(i+1) as usize][(j+1) as usize]) && (self.goban.board[(i+1) as usize][(j+1) as usize] == self.goban.board[(i) as usize][(j+2) as usize])
+                    );
                 if (self.goban.board[i as usize][j as usize] == 1 || self.goban.board[i as usize][j as usize] == 2) && 
                  (((self.goban.board[i as usize][j as usize] == self.goban.board[(i+1) as usize][j as usize] )
                     && (self.goban.board[(i+1) as usize][j as usize] == self.goban.board[(i+2) as usize][j as usize]))
@@ -67,8 +74,9 @@ impl SanmokuNarabe{
                     && (self.goban.board[i as usize][(j+1) as usize] == self.goban.board[i as usize][(j+2) as usize]))
                 || ((self.goban.board[i as usize][j as usize] == self.goban.board[(i+1) as usize][(j+1) as usize] )
                     && (self.goban.board[(i+1) as usize][(j+1) as usize] == self.goban.board[(i+2) as usize][(j+2) as usize]))
-                || ((self.goban.board[(i+2) as usize][j as usize] == self.goban.board[(i+1) as usize][(j+1) as usize])
-                    && (self.goban.board[(i+1) as usize][(j+1) as usize] == self.goban.board[(i) as usize][(j+2) as usize])))
+                ) ||(self.goban.board[(i+2) as usize][j as usize] == 1 || self.goban.board[i as usize][j as usize] == 2) &&
+                ((self.goban.board[(i+2) as usize][j as usize] == self.goban.board[(i+1) as usize][(j+1) as usize])
+                && (self.goban.board[(i+1) as usize][(j+1) as usize] == self.goban.board[(i) as usize][(j+2) as usize]))
                 {
                     return true
                 }
@@ -102,9 +110,11 @@ impl SanmokuNarabe{
         print!("マスを指定してください(x y): ");
         stdout().flush().unwrap();
         input!{
-            x: u8,
-            y: u8,
+            _x: u8,
+            _y: u8,
         };
+        let mut x = _x;
+        let mut y = _y;
         // let inside_flag = self.check_inside(x, y);
         let (mut inside_flag, mut duplicate_flag) = self.check_enable_put(x, y);
         println!("{} {}",inside_flag, duplicate_flag);
@@ -118,9 +128,10 @@ impl SanmokuNarabe{
             print!("マスを指定してください(x y): ");
             stdout().flush().unwrap();
             input!{
-                x: u8,
-                y: u8,
+                _x: u8,
+                _y: u8,
             };
+            x = _x; y = _y;
             let( _inside_flag, _duplicate_flag) = self.check_enable_put(x, y);
             inside_flag = _inside_flag;
             duplicate_flag = _duplicate_flag;
@@ -146,7 +157,7 @@ impl SanmokuNarabe{
         if self.goban.x <= x || self.goban.y <= y{
             flag1 = false;
         }
-        if flag1 && self.goban.board[x as usize][y as usize] == 0{
+        if flag1 && self.goban.board[x as usize][y as usize] != 0{
             flag2 = false
         }
         return (flag1, flag2);
