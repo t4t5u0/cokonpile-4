@@ -85,10 +85,9 @@ impl SanmokuNarabe{
         }
         for j in ((self.goban.y-2) as usize)..(self.goban.y as usize){
             let x :usize = (self.goban.x - 3).into();
-            if (self.goban.board[x][j] == 1 || self.goban.board[x][j] == 2) && 
-            (self.goban.board[x][j] == self.goban.board[(x+1)][j]
-            && self.goban.board[(x+1)][j] == self.goban.board[(x+2)][j])
-            {
+            let is_stone = self.goban.board[x][j] == 1 || self.goban.board[x][j] == 2;
+            let check_vertical = self.goban.board[x][j] == self.goban.board[(x+1)][j] && self.goban.board[(x+1)][j] == self.goban.board[(x+2)][j]
+            if is_stone && check_vertical {
                 return true
             } 
         }
