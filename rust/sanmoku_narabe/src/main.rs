@@ -57,47 +57,37 @@ impl SanmokuNarabe{
     }
 
     fn check(&self) -> bool {
-        for i in 0..self.goban.x-2{
-            for j in 0..self.goban.y-2{
+        for i in 0..(self.goban.x-2) as usize {
+            for j in 0..(self.goban.y-2) as usize{
                 // 縦横斜めの判定
-                println!("{} {} {} {} {}", 
-                        self.goban.board[i as usize][j as usize] == 1 || self.goban.board[i as usize][j as usize] == 2,
-                        (self.goban.board[i as usize][j as usize] == self.goban.board[(i+1) as usize][j as usize] ) && (self.goban.board[(i+1) as usize][j as usize] == self.goban.board[(i+2) as usize][j as usize]),
-                        (self.goban.board[i as usize][j as usize] == self.goban.board[i as usize][(j+1) as usize] ) && (self.goban.board[i as usize][(j+1) as usize] == self.goban.board[i as usize][(j+2) as usize]),
-                        ((self.goban.board[i as usize][j as usize] == self.goban.board[(i+1) as usize][(j+1) as usize] ) && (self.goban.board[(i+1) as usize][(j+1) as usize] == self.goban.board[(i+2) as usize][(j+2) as usize])),
-                        (self.goban.board[(i+2) as usize][j as usize] == self.goban.board[(i+1) as usize][(j+1) as usize]) && (self.goban.board[(i+1) as usize][(j+1) as usize] == self.goban.board[(i) as usize][(j+2) as usize])
-                    );
-                if ((self.goban.board[i as usize][j as usize] == 1 || self.goban.board[i as usize][j as usize] == 2) && 
-                    ((self.goban.board[i as usize][j as usize] == self.goban.board[(i+1) as usize][j as usize]
-                        && self.goban.board[(i+1) as usize][j as usize] == self.goban.board[(i+2) as usize][j as usize])
-                    || (self.goban.board[i as usize][j as usize] == self.goban.board[i as usize][(j+1) as usize]
-                        && self.goban.board[i as usize][(j+1) as usize] == self.goban.board[i as usize][(j+2) as usize])
-                    || (self.goban.board[i as usize][j as usize] == self.goban.board[(i+1) as usize][(j+1) as usize]
-                        && self.goban.board[(i+1) as usize][(j+1) as usize] == self.goban.board[(i+2) as usize][(j+2) as usize])))
-                || ((self.goban.board[(i+2) as usize][j as usize] == 1 || self.goban.board[i as usize][j as usize] == 2) &&
-                    ((self.goban.board[(i+2) as usize][j as usize] == self.goban.board[(i+1) as usize][(j+1) as usize])
-                    && (self.goban.board[(i+1) as usize][(j+1) as usize] == self.goban.board[(i) as usize][(j+2) as usize])))
-                {
+
+                let upper_left_is_stone = self.goban.board[i][j] == 1 || self.goban.board[i][j] == 2;
+                let upper_right_is_stone = self.goban.board[(i+2)][j] == 1 || self.goban.board[(i+2)][j] == 2;
+                let check_horizontal = self.goban.board[i][j] == self.goban.board[(i+1)][j] && self.goban.board[(i+1)][j] == self.goban.board[(i+2)][j];
+                let check_vertical = self.goban.board[i][j] == self.goban.board[i][(j+1)] && self.goban.board[i][(j+1)] == self.goban.board[i][(j+2)];
+                let check_left_diagnol = self.goban.board[i][j] == self.goban.board[(i+1)][(j+1)] && self.goban.board[(i+1)][(j+1)] == self.goban.board[(i+2)][(j+2)];
+                let check_right_diagnol  = self.goban.board[(i+2)][j] == self.goban.board[(i+1)][(j+1)] && self.goban.board[(i+1)][(j+1)] == self.goban.board[(i)][(j+2)];
+                // println!("{} {} {} {} {} {} ", upper_left_is_stone, upper_right_is_stone, check_horizontal, check_vertical, check_left_diagnol, check_right_diagnol);
+                if (upper_left_is_stone && (check_horizontal || check_vertical || check_left_diagnol)) || (upper_right_is_stone && check_right_diagnol) {
                     return true
                 }
             }
         }
         // 下２段は別に処理する
-        for i in 0..self.goban.x-2{
-            for j in self.goban.y..self.goban.y{
-                if ((self.goban.board[i as usize][j as usize] == 1) || (self.goban.board[i as usize][j as usize] == 2)) 
-                    && (self.goban.board[i as usize][j as usize] == self.goban.board[(i+1) as usize][j as usize] 
-                    && self.goban.board[(i+1) as usize][j as usize] == self.goban.board[(i+2) as usize][j as usize])
-                {
+        for i in 0..(self.goban.x-2) as usize {
+            for j in (self.goban.y as usize)..(self.goban.y as usize) {
+                let upper_left_is_stone = self.goban.board[i][j] == 1 || self.goban.board[i][j] == 2;
+                let check_horizontal = self.goban.board[i][j] == self.goban.board[(i+1)][j] && self.goban.board[(i+1)][j] == self.goban.board[(i+2)][j];
+                if upper_left_is_stone && check_horizontal {
                     return true
                 }
             }
         }
-        for j in self.goban.y-2..self.goban.y{
-            let x = self.goban.x - 3;
-            if (self.goban.board[x as usize][j as usize] == 1 || self.goban.board[x as usize][j as usize] == 2) && 
-            (self.goban.board[x as usize][j as usize] == self.goban.board[(x+1) as usize][j as usize]
-            && self.goban.board[(x+1) as usize][j as usize] == self.goban.board[(x+2) as usize][j as usize])
+        for j in ((self.goban.y-2) as usize)..(self.goban.y as usize){
+            let x :usize = (self.goban.x - 3).into();
+            if (self.goban.board[x][j] == 1 || self.goban.board[x][j] == 2) && 
+            (self.goban.board[x][j] == self.goban.board[(x+1)][j]
+            && self.goban.board[(x+1)][j] == self.goban.board[(x+2)][j])
             {
                 return true
             } 
