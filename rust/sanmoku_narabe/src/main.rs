@@ -67,16 +67,16 @@ impl SanmokuNarabe{
                         ((self.goban.board[i as usize][j as usize] == self.goban.board[(i+1) as usize][(j+1) as usize] ) && (self.goban.board[(i+1) as usize][(j+1) as usize] == self.goban.board[(i+2) as usize][(j+2) as usize])),
                         (self.goban.board[(i+2) as usize][j as usize] == self.goban.board[(i+1) as usize][(j+1) as usize]) && (self.goban.board[(i+1) as usize][(j+1) as usize] == self.goban.board[(i) as usize][(j+2) as usize])
                     );
-                if (self.goban.board[i as usize][j as usize] == 1 || self.goban.board[i as usize][j as usize] == 2) && 
-                 (((self.goban.board[i as usize][j as usize] == self.goban.board[(i+1) as usize][j as usize] )
-                    && (self.goban.board[(i+1) as usize][j as usize] == self.goban.board[(i+2) as usize][j as usize]))
-                || ((self.goban.board[i as usize][j as usize] == self.goban.board[i as usize][(j+1) as usize] )
-                    && (self.goban.board[i as usize][(j+1) as usize] == self.goban.board[i as usize][(j+2) as usize]))
-                || ((self.goban.board[i as usize][j as usize] == self.goban.board[(i+1) as usize][(j+1) as usize] )
-                    && (self.goban.board[(i+1) as usize][(j+1) as usize] == self.goban.board[(i+2) as usize][(j+2) as usize]))
-                ) ||(self.goban.board[(i+2) as usize][j as usize] == 1 || self.goban.board[i as usize][j as usize] == 2) &&
-                ((self.goban.board[(i+2) as usize][j as usize] == self.goban.board[(i+1) as usize][(j+1) as usize])
-                && (self.goban.board[(i+1) as usize][(j+1) as usize] == self.goban.board[(i) as usize][(j+2) as usize]))
+                if ((self.goban.board[i as usize][j as usize] == 1 || self.goban.board[i as usize][j as usize] == 2) && 
+                    ((self.goban.board[i as usize][j as usize] == self.goban.board[(i+1) as usize][j as usize]
+                        && self.goban.board[(i+1) as usize][j as usize] == self.goban.board[(i+2) as usize][j as usize])
+                    || (self.goban.board[i as usize][j as usize] == self.goban.board[i as usize][(j+1) as usize]
+                        && self.goban.board[i as usize][(j+1) as usize] == self.goban.board[i as usize][(j+2) as usize])
+                    || (self.goban.board[i as usize][j as usize] == self.goban.board[(i+1) as usize][(j+1) as usize]
+                        && self.goban.board[(i+1) as usize][(j+1) as usize] == self.goban.board[(i+2) as usize][(j+2) as usize])))
+                || ((self.goban.board[(i+2) as usize][j as usize] == 1 || self.goban.board[i as usize][j as usize] == 2) &&
+                    ((self.goban.board[(i+2) as usize][j as usize] == self.goban.board[(i+1) as usize][(j+1) as usize])
+                    && (self.goban.board[(i+1) as usize][(j+1) as usize] == self.goban.board[(i) as usize][(j+2) as usize])))
                 {
                     return true
                 }
