@@ -1,3 +1,4 @@
+use std::io::{Write, stdout};
 use proconio::input;
 
 // 三目並べ
@@ -6,13 +7,16 @@ use proconio::input;
 
 
 fn main() {
-    println!("ゲームスタート");
+    print!("碁盤の大きさを指定してください: ");
+    stdout().flush().unwrap();
     input!(
         x: u32,
         y: u32,
     );
-    let board = Board::new(x, y);
-    board.show();
+    println!();
+    println!("ゲームスタート");
+    let mut sanmoku = SanmokuNarabe::new(Board::new(x, y));
+    sanmoku.play();
 }
 
 // enum Result {
@@ -29,15 +33,26 @@ struct SanmokuNarabe{
 }
 
 impl SanmokuNarabe{
-    fn play(&self){
+    fn new(board: Board) -> Self{
+        SanmokuNarabe{
+            is_first : true,
+            turn: 0,
+            goban: board,
+        }
+    }
 
+
+    fn play(&mut self){
+        for turn in 1..=self.goban.x*self.goban.y{
+            self.turn = turn
+            
+        }
     }
 
     fn check(&self) -> bool {
         for i in 0..self.goban.x-2{
             for j in 0..self.goban.y-2{
                 // 縦横斜めの判定
-                // !配列外参照起こしそう
                 if (self.goban.board[i as usize][j as usize] == self.goban.board[(i+1) as usize][j as usize] 
                     && self.goban.board[(i+1) as usize][j as usize] == self.goban.board[(i+2) as usize][j as usize])
                 || (self.goban.board[i as usize][j as usize] == self.goban.board[i as usize][(j+1) as usize] 
@@ -51,13 +66,39 @@ impl SanmokuNarabe{
                 }
             }
         }
-    return false
+        // 下２段は別に処理する
+        for i in 0..self.goban.x-2{
+            for j in self.goban.y..self.goban.y{
+                if self.goban.board[i as usize][j as usize] == self.goban.board[(i+1) as usize][j as usize] 
+                    && self.goban.board[(i+1) as usize][j as usize] == self.goban.board[(i+2) as usize][j as usize]
+                {
+                    return true
+                }
+            }
+        }
+        return false
     }
     fn start_turn(&mut self) {
         println!("{}ターン目です。", self.turn);
-
+        println!("{}のターンです", if self.is_first {"先攻"} else {"後攻"});
+        print!("マスを指定してください(x y): ");
+        input!{
+            x: u32,
+            y: u32,
+        };
+        let result = self.check_inside(x, y);
+        if !result{
+            println!("碁盤の外にどうやって石を置くんですか？")
+        }
         self.is_first = !self.is_first;
         self.turn += 1;
+    }
+
+    fn check_inside(&self, x:u32, y:u32) -> bool{
+        if self.goban.x >= x && self.goban.y >= y{
+            return true
+        }
+        return false
     }
 }
 
@@ -72,11 +113,17 @@ impl Board{
         Board{
             x: x,
             y: y,
-            board: vec![vec![0;y as usize];x as usize]}
+            board: vec![vec![0;y as usize];x as usize]
+        }
     }
 
     fn show(&self){
-        for item in self.board.iter(){
+        for i in 0..self.board.len(){
+            print!(" {}",i);
+        }
+        println!();
+        for (index, item) in self.board.iter().enumerate(){
+            print!("{} ", index);
             for i in item{
                 match i {
                     0 => print!(" "),
