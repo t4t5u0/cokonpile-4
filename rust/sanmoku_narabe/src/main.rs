@@ -60,13 +60,12 @@ impl SanmokuNarabe{
         for i in 0..(self.goban.x-2) as usize {
             for j in 0..(self.goban.y-2) as usize{
                 // 縦横斜めの判定
-
                 let upper_left_is_stone = self.goban.board[i][j] == 1 || self.goban.board[i][j] == 2;
-                let upper_right_is_stone = self.goban.board[(i+2)][j] == 1 || self.goban.board[(i+2)][j] == 2;
-                let check_horizontal = self.goban.board[i][j] == self.goban.board[(i+1)][j] && self.goban.board[(i+1)][j] == self.goban.board[(i+2)][j];
-                let check_vertical = self.goban.board[i][j] == self.goban.board[i][(j+1)] && self.goban.board[i][(j+1)] == self.goban.board[i][(j+2)];
-                let check_left_diagnol = self.goban.board[i][j] == self.goban.board[(i+1)][(j+1)] && self.goban.board[(i+1)][(j+1)] == self.goban.board[(i+2)][(j+2)];
-                let check_right_diagnol  = self.goban.board[(i+2)][j] == self.goban.board[(i+1)][(j+1)] && self.goban.board[(i+1)][(j+1)] == self.goban.board[(i)][(j+2)];
+                let upper_right_is_stone = self.goban.board[i+2][j] == 1 || self.goban.board[i+2][j] == 2;
+                let check_horizontal = self.goban.board[i][j] == self.goban.board[i+1][j] && self.goban.board[i+1][j] == self.goban.board[i+2][j];
+                let check_vertical = self.goban.board[i][j] == self.goban.board[i][j+1] && self.goban.board[i][j+1] == self.goban.board[i][j+2];
+                let check_left_diagnol = self.goban.board[i][j] == self.goban.board[i+1][j+1] && self.goban.board[i+1][j+1] == self.goban.board[i+2][j+2];
+                let check_right_diagnol  = self.goban.board[i+2][j] == self.goban.board[i+1][j+1] && self.goban.board[i+1][j+1] == self.goban.board[(i)][j+2];
                 // println!("{} {} {} {} {} {} ", upper_left_is_stone, upper_right_is_stone, check_horizontal, check_vertical, check_left_diagnol, check_right_diagnol);
                 if (upper_left_is_stone && (check_horizontal || check_vertical || check_left_diagnol)) || (upper_right_is_stone && check_right_diagnol) {
                     return true
@@ -77,7 +76,7 @@ impl SanmokuNarabe{
         for i in 0..(self.goban.x-2) as usize {
             for j in (self.goban.y as usize)..(self.goban.y as usize) {
                 let upper_left_is_stone = self.goban.board[i][j] == 1 || self.goban.board[i][j] == 2;
-                let check_horizontal = self.goban.board[i][j] == self.goban.board[(i+1)][j] && self.goban.board[(i+1)][j] == self.goban.board[(i+2)][j];
+                let check_horizontal = self.goban.board[i][j] == self.goban.board[i+1][j] && self.goban.board[i+1][j] == self.goban.board[i+2][j];
                 if upper_left_is_stone && check_horizontal {
                     return true
                 }
@@ -173,20 +172,21 @@ impl Board{
     } 
 
     fn show(&self){
+        print!(" ");
         for i in 0..self.board.len(){
             print!(" {}",i);
             stdout().flush().unwrap();
         }
         println!();
         for (index, item) in self.board.iter().enumerate(){
-            print!("{} ", index);
+            print!("{}", index);
             stdout().flush().unwrap();
             for i in item{
                 match i {
-                    0 => print!(" "),
-                    1 => print!("o"),
-                    2 => print!("x"),
-                    _ => print!("?")
+                    0 => print!("  "),
+                    1 => print!(" o"),
+                    2 => print!(" x"),
+                    _ => print!(" ?")
                 }
             }
             stdout().flush().unwrap();
